@@ -1,7 +1,8 @@
 package core.window;
 
 import java.awt.Color;
-import java.awt.Image;
+
+import javax.swing.ImageIcon;
 
 public class Window {
     
@@ -15,7 +16,7 @@ public class Window {
 
     private final String title;
 
-    private final Image appImage;
+    private final ImageIcon appImage;
     private final String appImageFilePath;
 
     private final boolean isResizable;
@@ -24,7 +25,7 @@ public class Window {
     private final boolean isOpaque;
     private final boolean isVisible;
     
-    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, Image appImage, String appImageFilePath, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
+    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, ImageIcon appImage, String appImageFilePath, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
@@ -64,7 +65,7 @@ public class Window {
         return title;
     }
 
-    public Image getAppImage() {
+    public ImageIcon getAppImage() {
         return appImage;
     }
 
