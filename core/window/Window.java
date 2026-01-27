@@ -1,6 +1,7 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.LayoutManager;
 
 public class Window {
     
@@ -16,13 +17,15 @@ public class Window {
 
     private final String appImageFilePath;
 
+    private final LayoutManager layout;
+
     private final boolean isResizable;
     private final boolean isDoubleBuffered;
     private final boolean isFocusable;
     private final boolean isOpaque;
     private final boolean isVisible;
-    
-    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, String appImageFilePath, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
+
+    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
@@ -30,6 +33,7 @@ public class Window {
         this.backgroundColor = backgroundColor;
         this.title = title;
         this.appImageFilePath = appImageFilePath;
+        this.layout = layout;
         this.isResizable = isResizable;
         this.isDoubleBuffered = isDoubleBuffered;
         this.isFocusable = isFocusable;
@@ -45,11 +49,11 @@ public class Window {
         return height;
     }
 
-    public int getXCoord() {
+    public int getxCoord() {
         return xCoord;
     }
 
-    public int getYCoord() {
+    public int getyCoord() {
         return yCoord;
     }
 
@@ -63,6 +67,10 @@ public class Window {
 
     public String getAppImageFilePath() {
         return appImageFilePath;
+    }
+
+    public LayoutManager getLayout() {
+        return layout;
     }
 
     public boolean isResizable() {
