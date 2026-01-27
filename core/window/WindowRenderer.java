@@ -22,7 +22,7 @@ public class WindowRenderer {
             windowFrame.setIconImage(getIconImage(window.getAppImageFilePath()));
 
             JLayeredPane windowPanel = new JLayeredPane();
-            windowPanel.setLayout(null);
+            windowPanel.setLayout(window.getLayout());
             windowPanel.setPreferredSize(new Dimension(window.getWidth(), window.getHeight()));
 
             windowPanel.setOpaque(window.isOpaque());
