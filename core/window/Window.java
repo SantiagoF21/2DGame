@@ -12,11 +12,8 @@ public class Window {
     private final int yCoord;
 
     private final Color backgroundColor;
-
     private final String title;
-
     private final String appImageFilePath;
-
     private final LayoutManager layout;
 
     private final boolean isResizable;
