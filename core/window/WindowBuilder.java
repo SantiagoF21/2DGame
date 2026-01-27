@@ -2,6 +2,7 @@ package core.window;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
 
 import core.env.DisplayEnvironment;
 
@@ -18,6 +19,7 @@ public class WindowBuilder {
     private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
     private static final String DEFAULT_TITLE = "New Window";
     private static final String DEFAULT_APP_IMAGE_FILE_PATH = "core/window/DefaultAppImage.png";
+    private static final LayoutManager DEFAULT_LAYOUT = null;
 
     private static final boolean DEFAULT_IS_RESIZABLE = true;
     private static final boolean DEFAULT_IS_DOUBLE_BUFFERED = false;
@@ -32,10 +34,9 @@ public class WindowBuilder {
     private int yCoord = DEFAULT_Y_COORD;
 
     private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
-
     private String title = DEFAULT_TITLE;
-
     private String appImageFilePath = DEFAULT_APP_IMAGE_FILE_PATH;
+    private LayoutManager layout = DEFAULT_LAYOUT;
 
     private boolean isResizable = DEFAULT_IS_RESIZABLE;
     private boolean isDoubleBuffered = DEFAULT_IS_DOUBLE_BUFFERED;
@@ -101,6 +102,11 @@ public class WindowBuilder {
         this.appImageFilePath = appImageFilePath;
         return this;
     }
+
+    public WindowBuilder setLayout(LayoutManager layout) {
+        this.layout = layout;
+        return this;
+    }
     
     public WindowBuilder setResizable(boolean isResizable) {
         this.isResizable = isResizable;
@@ -145,7 +151,7 @@ public class WindowBuilder {
             yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         }
         validateWindowFields();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, title, appImageFilePath, isResizable, isDoubleBuffered, isFocusable, isOpaque, isVisible);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, title, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque, isVisible);
     }
 
 }
