@@ -1,6 +1,7 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import core.env.DisplayEnvironment;
 
@@ -50,6 +51,12 @@ public class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setDimension(Dimension dimension) {
+        this.width = dimension.width;
+        this.height = dimension.height;
+        return this;
+    }
+
     public WindowBuilder setXCoord(int xCoord) {
         this.xCoord = xCoord;
         return this;
@@ -57,6 +64,12 @@ public class WindowBuilder {
 
     public WindowBuilder setYCoord(int yCoord) {
         this.yCoord = yCoord;
+        return this;
+    }
+
+    public WindowBuilder centerOnScreen() {
+        this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
+        this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         return this;
     }
 
