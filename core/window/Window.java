@@ -46,11 +46,11 @@ public class Window {
         return height;
     }
 
-    public int getxCoord() {
+    public int getXCoord() {
         return xCoord;
     }
 
-    public int getyCoord() {
+    public int getYCoord() {
         return yCoord;
     }
 
