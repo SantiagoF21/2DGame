@@ -7,6 +7,8 @@ import core.env.DisplayEnvironment;
 
 public class WindowBuilder {
 
+    private boolean autoCenter = true;
+
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 360;
 
@@ -51,6 +53,12 @@ public class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setDimension(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
     public WindowBuilder setDimension(Dimension dimension) {
         this.width = dimension.width;
         this.height = dimension.height;
@@ -59,17 +67,18 @@ public class WindowBuilder {
 
     public WindowBuilder setXCoord(int xCoord) {
         this.xCoord = xCoord;
+        this.autoCenter = false;
         return this;
     }
 
     public WindowBuilder setYCoord(int yCoord) {
         this.yCoord = yCoord;
+        this.autoCenter = false;
         return this;
     }
 
     public WindowBuilder centerOnScreen() {
-        this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
-        this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+        this.autoCenter = true;
         return this;
     }
 
@@ -121,14 +130,20 @@ public class WindowBuilder {
     private void validateWindowFields() {
         if (width <= 0) {
             throw new IllegalStateException("Width must be positive number; Width: " + width);
-        } else if (height <= 0) {
+        } if (height <= 0) {
             throw new IllegalStateException("Height must be positive number; Height: " + height);
-        } else if (title == null || title.trim().isEmpty()) {
+        } if (title == null || title.trim().isEmpty()) {
             throw new IllegalStateException("Title cannot be null or empty; Title: " + title);
+        } if (backgroundColor == null) {
+            throw new IllegalStateException("Background Color cannot be null.");
         }
     }
 
     public Window build() {
+        if (autoCenter) {
+            xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
+            yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+        }
         validateWindowFields();
         return new Window(width, height, xCoord, yCoord, backgroundColor, title, appImageFilePath, isResizable, isDoubleBuffered, isFocusable, isOpaque, isVisible);
     }
