@@ -2,7 +2,15 @@ package core.window;
 
 import java.awt.Color;
 
+import core.env.DisplayEnvironment;
+
 public class WindowBuilder {
+
+    private static final int DEFAULT_WIDTH = 640;
+    private static final int DEFAULT_HEIGHT = 360;
+
+    private static final int DEFAULT_X_COORD = (DisplayEnvironment.SCREEN_WIDTH - DEFAULT_WIDTH) / 2;
+    private static final int DEFAULT_Y_COORD = (DisplayEnvironment.SCREEN_HEIGHT - DEFAULT_HEIGHT) / 2;
 
     private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
     private static final String DEFAULT_TITLE = "New Window";
@@ -14,11 +22,11 @@ public class WindowBuilder {
     private static final boolean DEFAULT_IS_OPAQUE = true;
     private static final boolean DEFAULT_IS_VISIBLE = true;
 
-    private int width;
-    private int height;
+    private int width = DEFAULT_WIDTH;
+    private int height = DEFAULT_HEIGHT;
 
-    private int xCoord;
-    private int yCoord;
+    private int xCoord = DEFAULT_X_COORD;
+    private int yCoord = DEFAULT_Y_COORD;
 
     private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
