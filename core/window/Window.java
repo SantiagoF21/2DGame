@@ -12,14 +12,17 @@ public final class Window {
         4. Wasted Resources present
      */
     
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
 
-    private final int xCoord;
-    private final int yCoord;
+    private int xCoord;
+    private int yCoord;
 
-    private final Color backgroundColor;
-    private final String title;
+    private String title;
+    private Color backgroundColor;
+
+    private boolean isVisible;
+
     private final String appImageFilePath;
     private final LayoutManager layout;
 
@@ -27,22 +30,21 @@ public final class Window {
     private final boolean isDoubleBuffered;
     private final boolean isFocusable;
     private final boolean isOpaque;
-    private final boolean isVisible;
 
-    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
+    protected Window(int width, int height, int xCoord, int yCoord, String title, Color backgroundColor, boolean isVisible, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
-        this.backgroundColor = backgroundColor;
         this.title = title;
+        this.backgroundColor = backgroundColor;
+        this.isVisible = isVisible;
         this.appImageFilePath = appImageFilePath;
         this.layout = layout;
         this.isResizable = isResizable;
         this.isDoubleBuffered = isDoubleBuffered;
         this.isFocusable = isFocusable;
         this.isOpaque = isOpaque;
-        this.isVisible = isVisible;
     }
 
     public int getWidth() {
