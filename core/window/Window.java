@@ -1,6 +1,7 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
 
 public final class Window {
@@ -49,6 +50,16 @@ public final class Window {
 
     protected void setHeight(int height) {
         this.height = height;
+    }
+
+    public void setDimension(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.width = dimension.width;
+        this.height = dimension.height;
     }
 
     protected void setXCoord(int xCoord) {
