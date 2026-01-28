@@ -67,8 +67,8 @@ public final class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder centerOnScreen() {
-        this.isCentered = true;
+    public WindowBuilder setCentered(boolean isCentered) {
+        this.isCentered = isCentered;
         return this;
     }
 
