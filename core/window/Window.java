@@ -3,7 +3,14 @@ package core.window;
 import java.awt.Color;
 import java.awt.LayoutManager;
 
-public class Window {
+public final class Window {
+
+    /*
+        1. Not everything should be immutable
+        2. Window can be instantiated normally - protected, final keyword to prevent Inheritance
+        3. Because mutable fields HAVE to exist, we need getters, set them to protected
+        4. Wasted Resources present
+     */
     
     private final int width;
     private final int height;
@@ -22,7 +29,7 @@ public class Window {
     private final boolean isOpaque;
     private final boolean isVisible;
 
-    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
+    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, String title, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque, boolean isVisible) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
