@@ -6,43 +6,28 @@ import java.awt.LayoutManager;
 
 import core.env.DisplayEnvironment;
 
-public class WindowBuilder {
+public final class WindowBuilder {
 
     private boolean autoCenter = true;
+    
+    private int width = 640;
+    private int height = 360;
 
-    private static final int DEFAULT_WIDTH = 640;
-    private static final int DEFAULT_HEIGHT = 360;
+    private int xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
+    private int yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
 
-    private static final int DEFAULT_X_COORD = (DisplayEnvironment.SCREEN_WIDTH - DEFAULT_WIDTH) / 2;
-    private static final int DEFAULT_Y_COORD = (DisplayEnvironment.SCREEN_HEIGHT - DEFAULT_HEIGHT) / 2;
+    private String title = "New Window";
+    private Color backgroundColor = Color.BLACK;
 
-    private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
-    private static final String DEFAULT_TITLE = "New Window";
-    private static final String DEFAULT_APP_IMAGE_FILE_PATH = "core/window/DefaultAppImage.png";
-    private static final LayoutManager DEFAULT_LAYOUT = null;
+    private boolean isVisible = true;
 
-    private static final boolean DEFAULT_IS_RESIZABLE = true;
-    private static final boolean DEFAULT_IS_DOUBLE_BUFFERED = false;
-    private static final boolean DEFAULT_IS_FOCUSABLE = true;
-    private static final boolean DEFAULT_IS_OPAQUE = true;
-    private static final boolean DEFAULT_IS_VISIBLE = true;
+    private String appImageFilePath = "core/window/DefaultAppImage.png";
+    private LayoutManager layout = null;
 
-    private int width = DEFAULT_WIDTH;
-    private int height = DEFAULT_HEIGHT;
-
-    private int xCoord = DEFAULT_X_COORD;
-    private int yCoord = DEFAULT_Y_COORD;
-
-    private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
-    private String title = DEFAULT_TITLE;
-    private String appImageFilePath = DEFAULT_APP_IMAGE_FILE_PATH;
-    private LayoutManager layout = DEFAULT_LAYOUT;
-
-    private boolean isResizable = DEFAULT_IS_RESIZABLE;
-    private boolean isDoubleBuffered = DEFAULT_IS_DOUBLE_BUFFERED;
-    private boolean isFocusable = DEFAULT_IS_FOCUSABLE;
-    private boolean isOpaque = DEFAULT_IS_OPAQUE;
-    private boolean isVisible = DEFAULT_IS_VISIBLE;
+    private boolean isResizable = true;
+    private boolean isDoubleBuffered = false;
+    private boolean isFocusable = true;
+    private boolean isOpaque = true;
 
     public WindowBuilder setWidth(int width) {
         this.width = width;
@@ -151,7 +136,7 @@ public class WindowBuilder {
             yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         }
         validateWindowFields();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, title, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque, isVisible);
+        return new Window(width, height, xCoord, yCoord, title, backgroundColor, isVisible, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque);
     }
 
 }
