@@ -14,7 +14,7 @@ public final class WindowBuilder {
     private int xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
     private int yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
 
-    private boolean autoCenter = true;
+    private boolean isCentered = true;
 
     private String title = "New Window";
     private Color backgroundColor = Color.BLACK;
@@ -31,40 +31,44 @@ public final class WindowBuilder {
 
     public WindowBuilder setWidth(int width) {
         this.width = width;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder setHeight(int height) {
         this.height = height;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder setDimension(int width, int height) {
         this.width = width;
         this.height = height;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder setDimension(Dimension dimension) {
         this.width = dimension.width;
         this.height = dimension.height;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder setXCoord(int xCoord) {
         this.xCoord = xCoord;
-        this.autoCenter = false;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder setYCoord(int yCoord) {
         this.yCoord = yCoord;
-        this.autoCenter = false;
+        this.isCentered = areCoordsCentered();
         return this;
     }
 
     public WindowBuilder centerOnScreen() {
-        this.autoCenter = true;
+        this.isCentered = true;
         return this;
     }
 
@@ -130,13 +134,17 @@ public final class WindowBuilder {
         }
     }
 
+    private boolean areCoordsCentered() {
+        return xCoord == (DisplayEnvironment.SCREEN_WIDTH - width) / 2 && yCoord == (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+    }
+
     public Window build() {
-        if (autoCenter) {
+        if (isCentered) {
             xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
             yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         }
         validateWindowFields();
-        return new Window(width, height, xCoord, yCoord, title, backgroundColor, isVisible, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque);
+        return new Window(width, height, xCoord, yCoord, isCentered, title, backgroundColor, isVisible, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque);
     }
 
 }
