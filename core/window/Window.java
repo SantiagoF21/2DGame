@@ -4,13 +4,6 @@ import java.awt.Color;
 import java.awt.LayoutManager;
 
 public final class Window {
-
-    /*
-        1. Not everything should be immutable
-        2. Window can be instantiated normally - protected, final keyword to prevent Inheritance
-        3. Because mutable fields HAVE to exist, we need getters, set them to protected
-        4. Wasted Resources present
-     */
     
     private int width;
     private int height;
@@ -47,6 +40,34 @@ public final class Window {
         this.isOpaque = isOpaque;
     }
 
+    protected void setWidth(int width) {
+        this.width = width;
+    }
+
+    protected void setHeight(int height) {
+        this.height = height;
+    }
+
+    protected void setXCoord(int xCoord) {
+        this.xCoord = xCoord;
+    }
+
+    protected void setYCoord(int yCoord) {
+        this.yCoord = yCoord;
+    }
+
+    protected void setTitle(String title) {
+        this.title = title;
+    }
+
+    protected void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    protected void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -63,12 +84,16 @@ public final class Window {
         return yCoord;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public String getTitle() {
-        return title;
+    public boolean isVisible() {
+        return isVisible;
     }
 
     public String getAppImageFilePath() {
@@ -93,10 +118,6 @@ public final class Window {
 
     public boolean isOpaque() {
         return isOpaque;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
     }
 
 }
