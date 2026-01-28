@@ -7,14 +7,14 @@ import java.awt.LayoutManager;
 import core.env.DisplayEnvironment;
 
 public final class WindowBuilder {
-
-    private boolean autoCenter = true;
     
     private int width = 640;
     private int height = 360;
 
     private int xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
     private int yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+
+    private boolean autoCenter = true;
 
     private String title = "New Window";
     private Color backgroundColor = Color.BLACK;
@@ -68,6 +68,11 @@ public final class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
     public WindowBuilder setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
         return this;
@@ -78,8 +83,8 @@ public final class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder setTitle(String title) {
-        this.title = title;
+    public WindowBuilder setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
         return this;
     }
 
@@ -110,11 +115,6 @@ public final class WindowBuilder {
 
     public WindowBuilder setOpaque(boolean isOpaque) {
         this.isOpaque = isOpaque;
-        return this;
-    }
-
-    public WindowBuilder setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
         return this;
     }
 
