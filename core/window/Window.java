@@ -11,6 +11,8 @@ public final class Window {
     private int xCoord;
     private int yCoord;
 
+    private boolean isCentered;
+
     private String title;
     private Color backgroundColor;
 
@@ -23,12 +25,13 @@ public final class Window {
     private final boolean isDoubleBuffered;
     private final boolean isFocusable;
     private final boolean isOpaque;
-
-    protected Window(int width, int height, int xCoord, int yCoord, String title, Color backgroundColor, boolean isVisible, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque) {
+    
+    protected Window(int width, int height, int xCoord, int yCoord, boolean isCentered, String title, Color backgroundColor, boolean isVisible, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
+        this.isCentered = isCentered;
         this.title = title;
         this.backgroundColor = backgroundColor;
         this.isVisible = isVisible;
@@ -56,12 +59,20 @@ public final class Window {
         this.yCoord = yCoord;
     }
 
+    protected void setCentered(boolean isCentered) {
+        this.isCentered = isCentered;
+    }
+
     protected void setTitle(String title) {
         this.title = title;
     }
 
     protected void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    protected void setBackgroundColor(int red, int green, int blue) {
+        this.backgroundColor = new Color(red, green, blue);
     }
 
     protected void setVisible(boolean isVisible) {
@@ -82,6 +93,10 @@ public final class Window {
 
     public int getYCoord() {
         return yCoord;
+    }
+
+    public boolean isCentered() {
+        return isCentered;
     }
 
     public String getTitle() {
