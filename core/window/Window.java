@@ -52,12 +52,12 @@ public final class Window {
         this.height = height;
     }
 
-    public void setDimension(int width, int height) {
+    protected void setDimension(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    public void setDimension(Dimension dimension) {
+    protected void setDimension(Dimension dimension) {
         this.width = dimension.width;
         this.height = dimension.height;
     }
