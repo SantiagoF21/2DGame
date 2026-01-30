@@ -20,13 +20,13 @@ public final class WindowBuilder {
     private Color backgroundColor = Color.BLACK;
 
     private boolean isVisible = true;
+    private boolean isFocusable = true;
 
     private String appImageFilePath = "core/window/DefaultAppImage.png";
     private LayoutManager layout = null;
 
     private boolean isResizable = true;
     private boolean isDoubleBuffered = false;
-    private boolean isFocusable = true;
     private boolean isOpaque = true;
 
     public WindowBuilder setWidth(int width) {
@@ -92,6 +92,11 @@ public final class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setFocusable(boolean isFocusable) {
+        this.isFocusable = isFocusable;
+        return this;
+    }
+
     public WindowBuilder setAppImageFilePath(String appImageFilePath) {
         this.appImageFilePath = appImageFilePath;
         return this;
@@ -109,11 +114,6 @@ public final class WindowBuilder {
 
     public WindowBuilder setDoubleBuffered(boolean isDoubleBuffered) {
         this.isDoubleBuffered = isDoubleBuffered;
-        return this;
-    }
-
-    public WindowBuilder setFocusable(boolean isFocusable) {
-        this.isFocusable = isFocusable;
         return this;
     }
 
@@ -144,7 +144,7 @@ public final class WindowBuilder {
             yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         }
         validateWindowFields();
-        return new Window(width, height, xCoord, yCoord, isCentered, title, backgroundColor, isVisible, appImageFilePath, layout, isResizable, isDoubleBuffered, isFocusable, isOpaque);
+        return new Window(width, height, xCoord, yCoord, isCentered, title, backgroundColor, isVisible, isFocusable, appImageFilePath, layout, isResizable, isDoubleBuffered, isOpaque);
     }
 
 }
