@@ -18,16 +18,16 @@ public final class Window {
     private Color backgroundColor;
 
     private boolean isVisible;
+    private boolean isFocusable;
 
     private final String appImageFilePath;
     private final LayoutManager layout;
 
     private final boolean isResizable;
     private final boolean isDoubleBuffered;
-    private final boolean isFocusable;
     private final boolean isOpaque;
-    
-    protected Window(int width, int height, int xCoord, int yCoord, boolean isCentered, String title, Color backgroundColor, boolean isVisible, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isFocusable, boolean isOpaque) {
+
+    protected Window(int width, int height, int xCoord, int yCoord, boolean isCentered, String title, Color backgroundColor, boolean isVisible, boolean isFocusable, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isOpaque) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
@@ -36,11 +36,11 @@ public final class Window {
         this.title = title;
         this.backgroundColor = backgroundColor;
         this.isVisible = isVisible;
+        this.isFocusable = isFocusable;
         this.appImageFilePath = appImageFilePath;
         this.layout = layout;
         this.isResizable = isResizable;
         this.isDoubleBuffered = isDoubleBuffered;
-        this.isFocusable = isFocusable;
         this.isOpaque = isOpaque;
     }
 
@@ -90,6 +90,10 @@ public final class Window {
         this.isVisible = isVisible;
     }
 
+    protected void setFocusable(boolean isFocusable) {
+        this.isFocusable = isFocusable;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -122,6 +126,10 @@ public final class Window {
         return isVisible;
     }
 
+    public boolean isFocusable() {
+        return isFocusable;
+    }
+
     public String getAppImageFilePath() {
         return appImageFilePath;
     }
@@ -136,10 +144,6 @@ public final class Window {
 
     public boolean isDoubleBuffered() {
         return isDoubleBuffered;
-    }
-
-    public boolean isFocusable() {
-        return isFocusable;
     }
 
     public boolean isOpaque() {
