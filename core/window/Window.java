@@ -1,18 +1,15 @@
 package core.window;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-public final class Window {
+public class Window {
     
     private int width;
     private int height;
 
     private int xCoord;
     private int yCoord;
-
-    private boolean isCentered;
 
     private String title;
     private Color backgroundColor;
@@ -27,12 +24,11 @@ public final class Window {
     private final boolean isDoubleBuffered;
     private final boolean isOpaque;
 
-    protected Window(int width, int height, int xCoord, int yCoord, boolean isCentered, String title, Color backgroundColor, boolean isVisible, boolean isFocusable, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isOpaque) {
+    protected Window(int width, int height, int xCoord, int yCoord, String title, Color backgroundColor, boolean isVisible, boolean isFocusable, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isOpaque) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
-        this.isCentered = isCentered;
         this.title = title;
         this.backgroundColor = backgroundColor;
         this.isVisible = isVisible;
@@ -52,26 +48,12 @@ public final class Window {
         this.height = height;
     }
 
-    protected void setDimension(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    protected void setDimension(Dimension dimension) {
-        this.width = dimension.width;
-        this.height = dimension.height;
-    }
-
     protected void setXCoord(int xCoord) {
         this.xCoord = xCoord;
     }
 
     protected void setYCoord(int yCoord) {
         this.yCoord = yCoord;
-    }
-
-    protected void setCentered(boolean isCentered) {
-        this.isCentered = isCentered;
     }
 
     protected void setTitle(String title) {
@@ -108,10 +90,6 @@ public final class Window {
 
     public int getYCoord() {
         return yCoord;
-    }
-
-    public boolean isCentered() {
-        return isCentered;
     }
 
     public String getTitle() {
