@@ -5,42 +5,44 @@ import java.awt.LayoutManager;
 
 public class Window {
     
-    private volatile int width;
-    private volatile int height;
+    private int width;
+    private int height;
 
-    private volatile int xCoord;
-    private volatile int yCoord;
+    private int xCoord;
+    private int yCoord;
 
-    private volatile String title;
-    private volatile Color backgroundColor;
+    private Color backgroundColor;
 
-    private volatile boolean isVisible;
-    private volatile boolean isFocusable;
+    private boolean isVisible;
+    private boolean isFocusable;
 
+    /* Represents when a Window should redrawn on the EDT (Event Dispatch Thread) */
+    private boolean isDirty;
+
+    private final String title;
     private final String appImageFilePath;
     private final LayoutManager layout;
 
-    private final boolean isResizable;
+    private final boolean isManuallyResizable;
     private final boolean isDoubleBuffered;
     private final boolean isOpaque;
 
-    private volatile boolean isDirty;
-
-    protected Window(int width, int height, int xCoord, int yCoord, String title, Color backgroundColor, boolean isVisible, boolean isFocusable, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isOpaque) {
+    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isVisible, boolean isFocusable, String title, String appImageFilePath, LayoutManager layout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque) {
         this.width = width;
         this.height = height;
         this.xCoord = xCoord;
         this.yCoord = yCoord;
-        this.title = title;
         this.backgroundColor = backgroundColor;
         this.isVisible = isVisible;
         this.isFocusable = isFocusable;
+        /* Window when instanciated will be treated as dirty so that it can render for the first time.*/
+        this.isDirty = true;
+        this.title = title;
         this.appImageFilePath = appImageFilePath;
         this.layout = layout;
-        this.isResizable = isResizable;
+        this.isManuallyResizable = isManuallyResizable;
         this.isDoubleBuffered = isDoubleBuffered;
         this.isOpaque = isOpaque;
-        this.isDirty = true;
     }
 
     protected synchronized void setWidth(int width) {
@@ -71,9 +73,12 @@ public class Window {
         }
     }
 
-    protected synchronized void setTitle(String title) {
-        if (this.title != title) {
-            this.title = title;
+    protected synchronized void setBounds(int xCoord, int yCoord, int width, int height) {
+        if (this.xCoord != xCoord || this.yCoord != yCoord || this.width != width || this.height != height) {
+            this.xCoord = xCoord;
+            this.yCoord = yCoord;
+            this.width = width;
+            this.height = height;
             this.isDirty = true;
         }
     }
@@ -106,40 +111,46 @@ public class Window {
         }
     }
 
-    public synchronized void clean() {
+    /* Should only be read/written/modified by WindowRenderer */
+    protected synchronized void clean() {
         this.isDirty = false;
     }
 
-    public int getWidth() {
+    public synchronized int getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public synchronized int getHeight() {
         return height;
     }
 
-    public int getXCoord() {
+    public synchronized int getXCoord() {
         return xCoord;
     }
 
-    public int getYCoord() {
+    public synchronized int getYCoord() {
         return yCoord;
     }
 
-    public String getTitle() {
+    public synchronized String getTitle() {
         return title;
     }
 
-    public Color getBackgroundColor() {
+    public synchronized Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public boolean isVisible() {
+    public synchronized boolean isVisible() {
         return isVisible;
     }
 
-    public boolean isFocusable() {
+    public synchronized boolean isFocusable() {
         return isFocusable;
+    }
+
+    /* Should only be read/written/modified by WindowRenderer */
+    protected synchronized boolean isDirty() {
+        return isDirty;
     }
 
     public String getAppImageFilePath() {
@@ -150,8 +161,8 @@ public class Window {
         return layout;
     }
 
-    public boolean isResizable() {
-        return isResizable;
+    public boolean isManuallyResizable() {
+        return isManuallyResizable;
     }
 
     public boolean isDoubleBuffered() {
@@ -162,8 +173,8 @@ public class Window {
         return isOpaque;
     }
 
-    public boolean isDirty() {
-        return isDirty;
+    protected synchronized Window getSnapshot() {
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
     }
 
 }
