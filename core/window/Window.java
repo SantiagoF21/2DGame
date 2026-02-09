@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.LayoutManager;
 
 public class Window {
-
-    private volatile boolean isDirty;
     
     private volatile int width;
     private volatile int height;
@@ -26,6 +24,8 @@ public class Window {
     private final boolean isDoubleBuffered;
     private final boolean isOpaque;
 
+    private volatile boolean isDirty;
+
     protected Window(int width, int height, int xCoord, int yCoord, String title, Color backgroundColor, boolean isVisible, boolean isFocusable, String appImageFilePath, LayoutManager layout, boolean isResizable, boolean isDoubleBuffered, boolean isOpaque) {
         this.width = width;
         this.height = height;
@@ -40,6 +40,7 @@ public class Window {
         this.isResizable = isResizable;
         this.isDoubleBuffered = isDoubleBuffered;
         this.isOpaque = isOpaque;
+        this.isDirty = true;
     }
 
     protected synchronized void setWidth(int width) {
