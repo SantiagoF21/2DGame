@@ -96,7 +96,7 @@ public final class WindowBuilder {
         return this;
     }
 
-    private void validateWindowFields() {
+    private void validate() {
         if (width <= 0) {
             throw new IllegalStateException("Width must be positive number; Width: " + width);
         } if (height <= 0) {
@@ -109,7 +109,7 @@ public final class WindowBuilder {
     }
 
     public Window build() {
-        validateWindowFields();
+        validate();
         return new Window(width, height, xCoord, yCoord, title, backgroundColor, isVisible, isFocusable, appImageFilePath, layout, isResizable, isDoubleBuffered, isOpaque);
     }
 
