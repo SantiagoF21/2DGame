@@ -4,18 +4,20 @@ import java.awt.Color;
 import java.awt.LayoutManager;
 
 public class Window {
+
+    private volatile boolean isDirty;
     
-    private int width;
-    private int height;
+    private volatile int width;
+    private volatile int height;
 
-    private int xCoord;
-    private int yCoord;
+    private volatile int xCoord;
+    private volatile int yCoord;
 
-    private String title;
-    private Color backgroundColor;
+    private volatile String title;
+    private volatile Color backgroundColor;
 
-    private boolean isVisible;
-    private boolean isFocusable;
+    private volatile boolean isVisible;
+    private volatile boolean isFocusable;
 
     private final String appImageFilePath;
     private final LayoutManager layout;
@@ -40,40 +42,71 @@ public class Window {
         this.isOpaque = isOpaque;
     }
 
-    protected void setWidth(int width) {
-        this.width = width;
+    protected synchronized void setWidth(int width) {
+        if (this.width != width) {
+            this.width = width;
+            this.isDirty = true;
+        }
     }
 
-    protected void setHeight(int height) {
-        this.height = height;
+    protected synchronized void setHeight(int height) {
+        if (this.height != height) {
+            this.height = height;
+            this.isDirty = true;
+        }
     }
 
-    protected void setXCoord(int xCoord) {
-        this.xCoord = xCoord;
+    protected synchronized void setXCoord(int xCoord) {
+        if (this.xCoord != xCoord) {
+            this.xCoord = xCoord;
+            this.isDirty = true;
+        }
     }
 
-    protected void setYCoord(int yCoord) {
-        this.yCoord = yCoord;
+    protected synchronized void setYCoord(int yCoord) {
+        if (this.yCoord != yCoord) {
+            this.yCoord = yCoord;
+            this.isDirty = true;
+        }
     }
 
-    protected void setTitle(String title) {
-        this.title = title;
+    protected synchronized void setTitle(String title) {
+        if (this.title != title) {
+            this.title = title;
+            this.isDirty = true;
+        }
     }
 
-    protected void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    protected synchronized void setBackgroundColor(Color backgroundColor) {
+        if (!this.backgroundColor.equals(backgroundColor)) {
+            this.backgroundColor = backgroundColor;
+            this.isDirty = true;
+        }
     }
 
-    protected void setBackgroundColor(int red, int green, int blue) {
-        this.backgroundColor = new Color(red, green, blue);
+    protected synchronized void setBackgroundColor(int red, int green, int blue) {
+        if (!this.backgroundColor.equals(new Color(red, green, blue))) {    
+            this.backgroundColor = new Color(red, green, blue);
+            this.isDirty = true;
+        }
     }
 
-    protected void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
+    protected synchronized void setVisible(boolean isVisible) {
+        if (this.isVisible != isVisible) {    
+            this.isVisible = isVisible;
+            this.isDirty = true;
+        }
     }
 
-    protected void setFocusable(boolean isFocusable) {
-        this.isFocusable = isFocusable;
+    protected synchronized void setFocusable(boolean isFocusable) {
+        if (this.isFocusable != isFocusable) {    
+            this.isFocusable = isFocusable;
+            this.isDirty = true;
+        }
+    }
+
+    public synchronized void clean() {
+        this.isDirty = false;
     }
 
     public int getWidth() {
@@ -126,6 +159,10 @@ public class Window {
 
     public boolean isOpaque() {
         return isOpaque;
+    }
+
+    public boolean isDirty() {
+        return isDirty;
     }
 
 }
