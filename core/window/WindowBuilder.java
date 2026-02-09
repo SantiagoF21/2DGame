@@ -96,6 +96,12 @@ public final class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder center() {
+        this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
+        this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+        return this;
+    }
+
     private void validate() {
         if (width <= 0) {
             throw new IllegalStateException("Width must be positive number; Width: " + width);
