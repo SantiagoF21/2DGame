@@ -11,32 +11,48 @@ import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
 public class WindowRenderer {
+
+    private final JFrame windowFrame;
+    private final JLayeredPane windowPanel;
+
+    public WindowRenderer() {
+        windowFrame = new JFrame();
+        windowPanel = new JLayeredPane();
+    }
     
-    public static void render(Window window) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame windowFrame = new JFrame();
+    public void render(Window window) {
+        if (window.isDirty()) {
+            window.updateSnapshot();
 
-            windowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            windowFrame.setResizable(window.isResizable());
-            windowFrame.setTitle(window.getTitle());
-            windowFrame.setIconImage(getIconImage(window.getAppImageFilePath()));
+            WindowState snapshot = window.getSnapshot();
+            SwingUtilities.invokeLater(() -> {
+                System.out.println("Hello World!");
+                windowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                windowFrame.setResizable(window.isManuallyResizable());
+                windowFrame.setTitle(window.getTitle());
+                windowFrame.setIconImage(getIconImage(window.getAppImageFilePath()));
 
-            JLayeredPane windowPanel = new JLayeredPane();
-            windowPanel.setLayout(window.getLayout());
-            windowPanel.setPreferredSize(new Dimension(window.getWidth(), window.getHeight()));
+                windowPanel.setLayout(window.getLayout());
+                windowPanel.setPreferredSize(new Dimension(window.getWidth(), window.getHeight()));
 
-            windowPanel.setOpaque(window.isOpaque());
-            windowPanel.setBackground(window.getBackgroundColor());
+                windowPanel.setOpaque(window.isOpaque());
+                windowPanel.setBackground(window.getBackgroundColor());
 
-            windowPanel.setDoubleBuffered(window.isDoubleBuffered());
-            windowPanel.setFocusable(window.isFocusable());
+                windowPanel.setDoubleBuffered(window.isDoubleBuffered());
+                windowPanel.setFocusable(window.isFocusable());
 
-            windowFrame.add(windowPanel);
-            windowFrame.pack();
+                windowFrame.add(windowPanel);
+                windowFrame.pack();
 
-            windowFrame.setLocation(window.getXCoord(), window.getYCoord());
-            windowFrame.setVisible(window.isVisible());
-        });
+                windowFrame.setLocation(window.getXCoord(), window.getYCoord());
+                windowFrame.setVisible(window.isVisible());
+            });
+        }
+    }
+
+    public void addListener(WindowEventHandler windowEventHandler) {
+        windowFrame.addWindowListener(windowEventHandler);
+        windowFrame.addComponentListener(windowEventHandler);
     }
 
     private static BufferedImage getIconImage(String appImageFilePath) {

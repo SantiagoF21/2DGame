@@ -4,6 +4,16 @@ import java.awt.Color;
 import java.awt.LayoutManager;
 
 public class Window {
+
+    /* CORE FIELDS */
+
+    /* Represents when a Window should redrawn on the EDT (Event Dispatch Thread) */
+    private boolean isDirty;
+
+    private WindowState liveWindow;
+    private WindowState renderWindow;
+
+    /* APPLICATION FIELDS */
     
     private int width;
     private int height;
@@ -15,9 +25,6 @@ public class Window {
 
     private boolean isVisible;
     private boolean isFocusable;
-
-    /* Represents when a Window should redrawn on the EDT (Event Dispatch Thread) */
-    private boolean isDirty;
 
     private final String title;
     private final String appImageFilePath;
@@ -35,14 +42,20 @@ public class Window {
         this.backgroundColor = backgroundColor;
         this.isVisible = isVisible;
         this.isFocusable = isFocusable;
-        /* Window when instanciated will be treated as dirty so that it can render for the first time.*/
-        this.isDirty = true;
         this.title = title;
         this.appImageFilePath = appImageFilePath;
         this.layout = layout;
         this.isManuallyResizable = isManuallyResizable;
         this.isDoubleBuffered = isDoubleBuffered;
         this.isOpaque = isOpaque;
+
+        /* Window when instanciated will be treated as dirty so that it can render for the first time.*/
+        this.isDirty = true;
+        /*  */
+        this.liveWindow = new WindowState();
+        this.renderWindow = new WindowState();
+        liveWindow.copyFrom(this);
+        renderWindow.copyFrom(liveWindow);
     }
 
     protected synchronized void setWidth(int width) {
@@ -73,16 +86,6 @@ public class Window {
         }
     }
 
-    protected synchronized void setBounds(int xCoord, int yCoord, int width, int height) {
-        if (this.xCoord != xCoord || this.yCoord != yCoord || this.width != width || this.height != height) {
-            this.xCoord = xCoord;
-            this.yCoord = yCoord;
-            this.width = width;
-            this.height = height;
-            this.isDirty = true;
-        }
-    }
-
     protected synchronized void setBackgroundColor(Color backgroundColor) {
         if (!this.backgroundColor.equals(backgroundColor)) {
             this.backgroundColor = backgroundColor;
@@ -109,11 +112,6 @@ public class Window {
             this.isFocusable = isFocusable;
             this.isDirty = true;
         }
-    }
-
-    /* Should only be read/written/modified by WindowRenderer */
-    protected synchronized void clean() {
-        this.isDirty = false;
     }
 
     public synchronized int getWidth() {
@@ -148,11 +146,6 @@ public class Window {
         return isFocusable;
     }
 
-    /* Should only be read/written/modified by WindowRenderer */
-    protected synchronized boolean isDirty() {
-        return isDirty;
-    }
-
     public String getAppImageFilePath() {
         return appImageFilePath;
     }
@@ -173,8 +166,30 @@ public class Window {
         return isOpaque;
     }
 
-    protected synchronized Window getSnapshot() {
-        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
+    /* Should only be read/written/modified by WindowRenderer */
+    protected synchronized void dirty() {
+        this.isDirty = false;
+    }
+
+    /* Should only be read/written/modified by WindowRenderer */
+    protected synchronized void clean() {
+        this.isDirty = false;
+    }
+
+    /* Should only be read/written/modified by WindowRenderer */
+    protected synchronized boolean isDirty() {
+        return isDirty;
+    }
+
+    protected synchronized void updateSnapshot() {
+        if (isDirty) {
+            renderWindow.copyFrom(liveWindow);
+            isDirty = false;
+        }
+    }
+
+    protected synchronized WindowState getSnapshot() {
+        return renderWindow;
     }
 
 }

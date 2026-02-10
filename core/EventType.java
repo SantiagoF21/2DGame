@@ -1,0 +1,13 @@
+package core;
+
+public enum EventType {
+    NONE,
+    WINDOW_CLOSED,
+    WINDOW_RESIZED,
+    KEY_PRESSED,
+    KEY_RELEASED,
+    MOUSE_BUTTON_PRESSED,
+    MOUSE_BUTTON_RELEASED,
+    MOUSE_MOVED,
+    MOUSE_SCROLLED;
+}

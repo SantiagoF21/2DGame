@@ -116,7 +116,7 @@ public final class WindowBuilder {
 
     public Window build() {
         validate();
-        return new Window(width, height, xCoord, yCoord, title, backgroundColor, isVisible, isFocusable, appImageFilePath, layout, isResizable, isDoubleBuffered, isOpaque);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isFocusable, title,appImageFilePath, layout, isResizable, isDoubleBuffered, isOpaque);
     }
 
 }
