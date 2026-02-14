@@ -60,36 +60,6 @@ public class Window {
         this.snapshot = new WindowMemento(this);
     }
 
-    /* CORE METHODS */
-
-    /* Should only be called when Window is instantiated or mutable field is changed */
-    protected synchronized void markDirty() {
-        this.isDirty = true;
-    }
-
-    /* Should only be called when Window is instantiated or mutable field is changed */
-    protected synchronized void markClean() {
-        this.isDirty = false;
-    }
-
-    /* If window is considered dirty, a snapshot of our window's mutable fields will be taken at that instance. */
-    protected synchronized void updateSnapshot() {
-        if (isDirty) {
-            markClean();
-            snapshot.updateFrom(this);
-        }
-    }
-
-    /* Should only be called when Window is getting rendered */
-    protected synchronized boolean isDirty() {
-        return isDirty;
-    }
-
-    /* Returns an instance of our snapshot */
-    protected synchronized WindowMemento getSnapshot() {
-        return snapshot;
-    }
-
     /* APP METHODS */
 
     public synchronized void setWidth(int width) {
@@ -221,5 +191,131 @@ public class Window {
     public boolean isOpaque() {
         return isOpaque;
     }
+
+    /* CORE METHODS */
+
+    /* Should only be called when Window is instantiated or mutable field is changed */
+    protected synchronized void markDirty() {
+        this.isDirty = true;
+    }
+
+    /* Should only be called when Window is instantiated or mutable field is changed */
+    protected synchronized void markClean() {
+        this.isDirty = false;
+    }
+
+    /* If window is considered dirty, a snapshot of our window's mutable fields will be taken at that instance. */
+    protected synchronized void updateSnapshot() {
+        if (isDirty) {
+            markClean();
+            snapshot.updateFrom(this);
+        }
+    }
+
+    /* Should only be called when Window is getting rendered */
+    protected synchronized boolean isDirty() {
+        return isDirty;
+    }
+
+    /* Returns an instance of our snapshot */
+    protected synchronized WindowMemento getSnapshot() {
+        return snapshot;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (isDirty ? 1231 : 1237);
+        result = prime * result + ((snapshot == null) ? 0 : snapshot.hashCode());
+        result = prime * result + width;
+        result = prime * result + height;
+        result = prime * result + xCoord;
+        result = prime * result + yCoord;
+        result = prime * result + ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
+        result = prime * result + (isVisible ? 1231 : 1237);
+        result = prime * result + (isMinimized ? 1231 : 1237);
+        result = prime * result + (isFocusable ? 1231 : 1237);
+        result = prime * result + (hasFocus ? 1231 : 1237);
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((appImageFilePath == null) ? 0 : appImageFilePath.hashCode());
+        result = prime * result + ((layout == null) ? 0 : layout.hashCode());
+        result = prime * result + (isManuallyResizable ? 1231 : 1237);
+        result = prime * result + (isDoubleBuffered ? 1231 : 1237);
+        result = prime * result + (isOpaque ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Window other = (Window) obj;
+        if (isDirty != other.isDirty)
+            return false;
+        if (snapshot == null) {
+            if (other.snapshot != null)
+                return false;
+        } else if (!snapshot.equals(other.snapshot))
+            return false;
+        if (width != other.width)
+            return false;
+        if (height != other.height)
+            return false;
+        if (xCoord != other.xCoord)
+            return false;
+        if (yCoord != other.yCoord)
+            return false;
+        if (backgroundColor == null) {
+            if (other.backgroundColor != null)
+                return false;
+        } else if (!backgroundColor.equals(other.backgroundColor))
+            return false;
+        if (isVisible != other.isVisible)
+            return false;
+        if (isMinimized != other.isMinimized)
+            return false;
+        if (isFocusable != other.isFocusable)
+            return false;
+        if (hasFocus != other.hasFocus)
+            return false;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (appImageFilePath == null) {
+            if (other.appImageFilePath != null)
+                return false;
+        } else if (!appImageFilePath.equals(other.appImageFilePath))
+            return false;
+        if (layout == null) {
+            if (other.layout != null)
+                return false;
+        } else if (!layout.equals(other.layout))
+            return false;
+        if (isManuallyResizable != other.isManuallyResizable)
+            return false;
+        if (isDoubleBuffered != other.isDoubleBuffered)
+            return false;
+        if (isOpaque != other.isOpaque)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Window [width=" + width + ", height=" + height + ", xCoord=" + xCoord + ", yCoord=" + yCoord
+                + ", backgroundColor=" + backgroundColor + ", isVisible=" + isVisible + ", isMinimized=" + isMinimized
+                + ", isFocusable=" + isFocusable + ", hasFocus=" + hasFocus + ", title=" + title + ", appImageFilePath="
+                + appImageFilePath + ", layout=" + layout + ", isManuallyResizable=" + isManuallyResizable
+                + ", isDoubleBuffered=" + isDoubleBuffered + ", isOpaque=" + isOpaque + "]";
+    }
+
+    
 
 }
