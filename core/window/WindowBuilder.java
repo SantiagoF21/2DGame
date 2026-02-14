@@ -5,7 +5,7 @@ import java.awt.LayoutManager;
 
 import core.env.DisplayEnvironment;
 
-public final class WindowBuilder {
+public class WindowBuilder {
     
     private int width = 640;
     private int height = 360;
@@ -13,17 +13,22 @@ public final class WindowBuilder {
     private int xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
     private int yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
 
-    private String title = "New Window";
     private Color backgroundColor = Color.BLACK;
 
     private boolean isVisible = true;
+    private boolean isMinimized = false;
+
     private boolean isFocusable = true;
+    private boolean hasFocus = true;
 
+    private String title = "New Window";
     private String appImageFilePath = "core/window/DefaultAppImage.png";
-    private LayoutManager layout = null;
 
-    private boolean isResizable = true;
-    private boolean isDoubleBuffered = false;
+    private LayoutManager layout = null;
+    private boolean isManuallyResizable = true;
+
+    private boolean isDoubleBuffered = true;
+
     private boolean isOpaque = true;
 
     public WindowBuilder setWidth(int width) {
@@ -46,11 +51,6 @@ public final class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
     public WindowBuilder setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
         return this;
@@ -66,8 +66,23 @@ public final class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setMinimized(boolean isMinimized) {
+        this.isMinimized = isMinimized;
+        return this;
+    }
+
     public WindowBuilder setFocusable(boolean isFocusable) {
         this.isFocusable = isFocusable;
+        return this;
+    }
+
+    public WindowBuilder setHasFocus(boolean hasFocus) {
+        this.hasFocus = hasFocus;
+        return this;
+    }
+
+    public WindowBuilder setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -80,9 +95,9 @@ public final class WindowBuilder {
         this.layout = layout;
         return this;
     }
-    
-    public WindowBuilder setResizable(boolean isResizable) {
-        this.isResizable = isResizable;
+
+    public WindowBuilder setManuallyResizable(boolean isManuallyResizable) {
+        this.isManuallyResizable = isManuallyResizable;
         return this;
     }
 
@@ -96,10 +111,70 @@ public final class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder center() {
+    public WindowBuilder centerOnScreen() {
         this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
         this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
         return this;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getXCoord() {
+        return xCoord;
+    }
+
+    public int getYCoord() {
+        return yCoord;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public boolean isMinimized() {
+        return isMinimized;
+    }
+
+    public boolean isFocusable() {
+        return isFocusable;
+    }
+
+    public boolean hasFocus() {
+        return hasFocus;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAppImageFilePath() {
+        return appImageFilePath;
+    }
+
+    public LayoutManager getLayout() {
+        return layout;
+    }
+
+    public boolean isManuallyResizable() {
+        return isManuallyResizable;
+    }
+
+    public boolean isDoubleBuffered() {
+        return isDoubleBuffered;
+    }
+
+    public boolean isOpaque() {
+        return isOpaque;
     }
 
     private void validate() {
@@ -116,7 +191,7 @@ public final class WindowBuilder {
 
     public Window build() {
         validate();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isFocusable, title,appImageFilePath, layout, isResizable, isDoubleBuffered, isOpaque);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isMinimized, isFocusable, hasFocus, title,appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
     }
 
 }
