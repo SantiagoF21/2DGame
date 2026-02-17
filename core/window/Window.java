@@ -307,6 +307,4 @@ public class Window {
                 + ", isDoubleBuffered=" + isDoubleBuffered + ", isOpaque=" + isOpaque + "]";
     }
 
-    
-
 }
