@@ -98,7 +98,7 @@ public class Window {
     }
 
     public synchronized void setBackgroundColor(int red, int green, int blue) {
-        if (this.backgroundColor.getRGB() != new Color(red, green, blue).getRGB()) {    
+        if (this.backgroundColor.getRed() != red || this.backgroundColor.getGreen() != green || this.backgroundColor.getBlue() != blue) {    
             this.backgroundColor = new Color(red, green, blue);
             markDirty();
         }
@@ -226,8 +226,6 @@ public class Window {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (isDirty ? 1231 : 1237);
-        result = prime * result + ((snapshot == null) ? 0 : snapshot.hashCode());
         result = prime * result + width;
         result = prime * result + height;
         result = prime * result + xCoord;
@@ -255,13 +253,6 @@ public class Window {
         if (getClass() != obj.getClass())
             return false;
         Window other = (Window) obj;
-        if (isDirty != other.isDirty)
-            return false;
-        if (snapshot == null) {
-            if (other.snapshot != null)
-                return false;
-        } else if (!snapshot.equals(other.snapshot))
-            return false;
         if (width != other.width)
             return false;
         if (height != other.height)
