@@ -1,310 +1,218 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.event.WindowAdapter;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
+
+import core.helper.Loader;
 
 public class Window {
-
-    /* CORE FIELDS */
-
-    /* Flag that represents when a Window needs be rendered on the EDT (Event Dispatch Thread) */
-    private boolean isDirty;
-
-    /* Implements Memento Design Pattern so that snapshots can be renderered on the EDT; Clear separation of states; Design -> Window.java (Originator), WindowMemento.java (Memento) N/A (Caretaker) */
-    private WindowMemento snapshot;
-
-    /* APP FIELDS */
-
-    private int width;
-    private int height;
-
-    private int xCoord;
-    private int yCoord;
-
-    private Color backgroundColor;
-
-    private boolean isVisible;
-    private boolean isMinimized;
-
-    private boolean isFocusable;
-    private boolean hasFocus;
-
-    private final String title;
-    private final String appImageFilePath;
-
-    private final LayoutManager layout;
-    private final boolean isManuallyResizable;
-
-    private final boolean isDoubleBuffered;
     
-    private final boolean isOpaque;
+    private JFrame windowFrame;
+    private JLayeredPane windowPanel;
 
-    /* Implements Builder Design Pattern so that devs can make Window instances without having to worry about argument order; Design -> Window.java (Product), WindowBuilder.java (Builder/ConcreteBuilder/Director), Custom Application (Client) */
-    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isVisible, boolean isMinimized, boolean isFocusable, boolean hasFocus, String title, String appImageFilePath, LayoutManager layout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque) {
-        this.width = width;
-        this.height = height;
-        this.xCoord = xCoord;
-        this.yCoord = yCoord;
-        this.backgroundColor = backgroundColor;
-        this.isVisible = isVisible;
-        this.isMinimized = isMinimized;
-        this.isFocusable = isFocusable;
-        this.hasFocus = hasFocus;
-        this.title = title;
-        this.appImageFilePath = appImageFilePath;
-        this.layout = layout;
-        this.isManuallyResizable = isManuallyResizable;
-        this.isDoubleBuffered = isDoubleBuffered;
-        this.isOpaque = isOpaque;
-        markDirty();
-        this.snapshot = new WindowMemento(this);
-    }
+    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque) {
+        windowFrame = new JFrame();
+        windowPanel = new JLayeredPane();
 
-    /* APP METHODS */
+        windowFrame.setResizable(isManuallyResizable);
+        windowFrame.setLocation(xCoord, yCoord);
+        windowFrame.setTitle(title);
 
-    public synchronized void setWidth(int width) {
-        if (this.width != width) {
-            this.width = width;
-            markDirty();
+        windowPanel.setPreferredSize(new Dimension(width, height));
+        windowPanel.setLayout(windowLayout);
+        windowPanel.setBackground(backgroundColor);
+        windowPanel.setOpaque(isOpaque);
+        windowPanel.setDoubleBuffered(isDoubleBuffered);
+        windowPanel.setFocusable(isFocusable);
+
+        if (appImageFilePath != null) {
+            BufferedImage icon = Loader.loadImage(appImageFilePath);
+            if (icon != null) {
+                this.windowFrame.setIconImage(icon);
+            }
         }
     }
 
-    public synchronized void setHeight(int height) {
-        if (this.height != height) {
-            this.height = height;
-            markDirty();
+    public void init() {
+        windowFrame.add(windowPanel);
+
+        windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        windowFrame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent e) {
+            handleShutdown();
         }
+    });
     }
 
-    public synchronized void setXCoord(int xCoord) {
-        if (this.xCoord != xCoord) {
-            this.xCoord = xCoord;
-            markDirty();
-        }
+    private void handleShutdown() {
+        System.out.println("Shutdown Hooks initiated:");
+        
+        //Implement system responsible for handling shutdown hooks
+        
+        windowFrame.dispose();
+        System.exit(0);
     }
 
-    public synchronized void setYCoord(int yCoord) {
-        if (this.yCoord != yCoord) {
-            this.yCoord = yCoord;
-            markDirty();
-        }
+    public void create() {
+        SwingUtilities.invokeLater(() -> {
+            windowFrame.pack();
+            windowFrame.setVisible(true); 
+            
+            int targetState = isMinimized() ? JFrame.ICONIFIED : JFrame.NORMAL;
+            windowFrame.setExtendedState(targetState);
+
+            windowPanel.requestFocusInWindow();
+        });
     }
 
-    public synchronized void setBackgroundColor(Color backgroundColor) {
-        if (!this.backgroundColor.equals(backgroundColor)) {
-            this.backgroundColor = backgroundColor;
-            markDirty();
-        }
+    public void setWidth(int width) {
+        int currentHeight = (int) windowPanel.getPreferredSize().getHeight();
+        windowPanel.setPreferredSize(new Dimension(width, currentHeight));
+        windowFrame.revalidate();
+        windowFrame.pack();
     }
 
-    public synchronized void setBackgroundColor(int red, int green, int blue) {
-        if (this.backgroundColor.getRed() != red || this.backgroundColor.getGreen() != green || this.backgroundColor.getBlue() != blue) {    
-            this.backgroundColor = new Color(red, green, blue);
-            markDirty();
-        }
+    public void setHeight(int height) {
+        int currentWidth = (int) windowPanel.getPreferredSize().getWidth();
+        windowPanel.setPreferredSize(new Dimension(currentWidth, height));
+        windowFrame.revalidate();
+        windowFrame.pack();
     }
 
-    public synchronized void setVisible(boolean isVisible) {
-        if (this.isVisible != isVisible) {    
-            this.isVisible = isVisible;
-            markDirty();
-        }
+    public void setXCoord(int xCoord) {
+        windowFrame.setLocation(xCoord, windowFrame.getY());
     }
 
-    public synchronized void setMinimized(boolean isMinimized) {
-        if (this.isMinimized != isMinimized) {
-            this.isMinimized = isMinimized;
-            markDirty();
-        }
+    public void setYCoord(int yCoord) {
+        windowFrame.setLocation(windowFrame.getX(), yCoord);
     }
 
-    public synchronized void setFocusable(boolean isFocusable) {
-        if (this.isFocusable != isFocusable) {    
-            this.isFocusable = isFocusable;
-            markDirty();
-        }
+    public void setBackgroundColor(Color backgroundColor) {
+        windowPanel.setBackground(backgroundColor);
     }
 
-    public synchronized void setHasFocus(boolean hasFocus) {
-        if (this.hasFocus != hasFocus) {
-            this.hasFocus = hasFocus;
-            markDirty();
-        }
+    public void setVisible(boolean isVisible) {
+        windowFrame.setVisible(isVisible);
     }
 
-    public synchronized int getWidth() {
-        return width;
+    public void setMinimized(boolean isMinimized) {
+        int state = isMinimized ? JFrame.ICONIFIED : JFrame.NORMAL;
+        windowFrame.setExtendedState(state);
     }
 
-    public synchronized int getHeight() {
-        return height;
+    public void setFocusable(boolean isFocusable) {
+        windowPanel.setFocusable(isFocusable);
     }
 
-    public synchronized int getXCoord() {
-        return xCoord;
+    public int getWidth() {
+        return (windowPanel.getWidth() > 0) ? windowPanel.getWidth() : windowPanel.getPreferredSize().width;
     }
 
-    public synchronized int getYCoord() {
-        return yCoord;
+    public int getHeight() {
+        return (windowPanel.getHeight() > 0) ? windowPanel.getHeight() : windowPanel.getPreferredSize().height;
     }
 
-    public synchronized Color getBackgroundColor() {
-        return backgroundColor;
+    public int getXCoord() {
+        return windowFrame.getX();
     }
 
-    public synchronized boolean isVisible() {
-        return isVisible;
+    public int getYCoord() {
+        return windowFrame.getY();
     }
 
-    public synchronized boolean isMinimized() {
-        return isMinimized;
+    public Color getBackgroundColor() {
+        return windowPanel.getBackground();
     }
 
-    public synchronized boolean isFocusable() {
-        return isFocusable;
+    public boolean isVisible() {
+        return windowFrame.isVisible();
     }
 
-    public synchronized boolean hasFocus() {
-        return hasFocus;
+    public boolean isMinimized() {
+        return (windowFrame.getExtendedState() & JFrame.ICONIFIED) != 0;
     }
 
-    public String getTitle() {
-        return title;
+    public boolean isFocusable() {
+        return windowPanel.isFocusable();
     }
 
-    public String getAppImageFilePath() {
-        return appImageFilePath;
-    }
-
-    public LayoutManager getLayout() {
-        return layout;
-    }
-
-    public boolean isManuallyResizable() {
-        return isManuallyResizable;
-    }
-
-    public boolean isDoubleBuffered() {
-        return isDoubleBuffered;
-    }
-
-    public boolean isOpaque() {
-        return isOpaque;
-    }
-
-    /* CORE METHODS */
-
-    /* Should only be called when Window is instantiated or mutable field is changed */
-    protected synchronized void markDirty() {
-        this.isDirty = true;
-    }
-
-    /* Should only be called when Window is instantiated or mutable field is changed */
-    protected synchronized void markClean() {
-        this.isDirty = false;
-    }
-
-    /* If window is considered dirty, a snapshot of our window's mutable fields will be taken at that instance. */
-    protected synchronized void updateSnapshot() {
-        if (isDirty) {
-            markClean();
-            snapshot.updateFrom(this);
-        }
-    }
-
-    /* Should only be called when Window is getting rendered */
-    protected synchronized boolean isDirty() {
-        return isDirty;
-    }
-
-    /* Returns an instance of our snapshot */
-    protected synchronized WindowMemento getSnapshot() {
-        return snapshot;
+    public boolean hasFocus() {
+        return windowFrame.hasFocus();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + width;
-        result = prime * result + height;
-        result = prime * result + xCoord;
-        result = prime * result + yCoord;
-        result = prime * result + ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
-        result = prime * result + (isVisible ? 1231 : 1237);
-        result = prime * result + (isMinimized ? 1231 : 1237);
-        result = prime * result + (isFocusable ? 1231 : 1237);
-        result = prime * result + (hasFocus ? 1231 : 1237);
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((appImageFilePath == null) ? 0 : appImageFilePath.hashCode());
-        result = prime * result + ((layout == null) ? 0 : layout.hashCode());
-        result = prime * result + (isManuallyResizable ? 1231 : 1237);
-        result = prime * result + (isDoubleBuffered ? 1231 : 1237);
-        result = prime * result + (isOpaque ? 1231 : 1237);
+        result = prime * result + getWidth();
+        result = prime * result + getHeight();
+        result = prime * result + getXCoord();
+        result = prime * result + getYCoord();
+        
+        result = prime * result + (isVisible() ? 1231 : 1237);
+        result = prime * result + (isMinimized() ? 1231 : 1237);
+        result = prime * result + (isFocusable() ? 1231 : 1237);
+        result = prime * result + (hasFocus() ? 1231 : 1237);
+        
+        result = prime * result + ((getBackgroundColor() == null) ? 0 : getBackgroundColor().hashCode());
+        result = prime * result + ((windowFrame.getTitle() == null) ? 0 : windowFrame.getTitle().hashCode());
+        result = prime * result + ((windowPanel.getLayout() == null) ? 0 : windowPanel.getLayout().hashCode());
+        
+        result = prime * result + (windowFrame.isResizable() ? 1231 : 1237);
+        result = prime * result + (windowPanel.isDoubleBuffered() ? 1231 : 1237);
+        result = prime * result + (windowPanel.isOpaque() ? 1231 : 1237);
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         Window other = (Window) obj;
-        if (width != other.width)
-            return false;
-        if (height != other.height)
-            return false;
-        if (xCoord != other.xCoord)
-            return false;
-        if (yCoord != other.yCoord)
-            return false;
-        if (backgroundColor == null) {
-            if (other.backgroundColor != null)
-                return false;
-        } else if (!backgroundColor.equals(other.backgroundColor))
-            return false;
-        if (isVisible != other.isVisible)
-            return false;
-        if (isMinimized != other.isMinimized)
-            return false;
-        if (isFocusable != other.isFocusable)
-            return false;
-        if (hasFocus != other.hasFocus)
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        if (appImageFilePath == null) {
-            if (other.appImageFilePath != null)
-                return false;
-        } else if (!appImageFilePath.equals(other.appImageFilePath))
-            return false;
-        if (layout == null) {
-            if (other.layout != null)
-                return false;
-        } else if (!layout.equals(other.layout))
-            return false;
-        if (isManuallyResizable != other.isManuallyResizable)
-            return false;
-        if (isDoubleBuffered != other.isDoubleBuffered)
-            return false;
-        if (isOpaque != other.isOpaque)
-            return false;
-        return true;
+
+        return getWidth() == other.getWidth() &&
+            getHeight() == other.getHeight() &&
+            getXCoord() == other.getXCoord() &&
+            getYCoord() == other.getYCoord() &&
+            isVisible() == other.isVisible() &&
+            isMinimized() == other.isMinimized() &&
+            isFocusable() == other.isFocusable() &&
+            hasFocus() == other.hasFocus() &&
+            windowFrame.isResizable() == other.windowFrame.isResizable() &&
+            windowPanel.isDoubleBuffered() == other.windowPanel.isDoubleBuffered() &&
+            windowPanel.isOpaque() == other.windowPanel.isOpaque() &&
+            java.util.Objects.equals(getBackgroundColor(), other.getBackgroundColor()) &&
+            java.util.Objects.equals(windowFrame.getTitle(), other.windowFrame.getTitle()) &&
+            java.util.Objects.equals(windowPanel.getLayout(), other.windowPanel.getLayout());
     }
 
     @Override
     public String toString() {
-        return "Window [width=" + width + ", height=" + height + ", xCoord=" + xCoord + ", yCoord=" + yCoord
-                + ", backgroundColor=" + backgroundColor + ", isVisible=" + isVisible + ", isMinimized=" + isMinimized
-                + ", isFocusable=" + isFocusable + ", hasFocus=" + hasFocus + ", title=" + title + ", appImageFilePath="
-                + appImageFilePath + ", layout=" + layout + ", isManuallyResizable=" + isManuallyResizable
-                + ", isDoubleBuffered=" + isDoubleBuffered + ", isOpaque=" + isOpaque + "]";
+        return "Window [" +
+           "width=" + getWidth() + 
+           ", height=" + getHeight() + 
+           ", xCoord=" + getXCoord() + 
+           ", yCoord=" + getYCoord() +
+           ", backgroundColor=" + getBackgroundColor() + 
+           ", isVisible=" + isVisible() + 
+           ", isMinimized=" + isMinimized() +
+           ", isFocusable=" + isFocusable() + 
+           ", hasFocus=" + hasFocus() + 
+           ", title=" + windowFrame.getTitle() + 
+           ", layout=" + windowPanel.getLayout() + 
+           ", isManuallyResizable=" + windowFrame.isResizable() +
+           ", isDoubleBuffered=" + windowPanel.isDoubleBuffered() + 
+           ", isOpaque=" + windowPanel.isOpaque() + 
+           "]";
     }
 
 }
