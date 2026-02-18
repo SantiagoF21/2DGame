@@ -47,11 +47,11 @@ public class Window {
         windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         windowFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(java.awt.event.WindowEvent e) {
-            handleShutdown();
-        }
-    });
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                handleShutdown();
+            }
+        });
     }
 
     private void handleShutdown() {
@@ -104,6 +104,7 @@ public class Window {
 
     public void setBackgroundColor(Color backgroundColor) {
         windowPanel.setBackground(backgroundColor);
+        windowPanel.repaint();
     }
 
     public void setVisible(boolean isVisible) {
@@ -155,8 +156,16 @@ public class Window {
         return windowFrame.hasFocus();
     }
 
+    public boolean isDecorated() {
+        return !windowFrame.isUndecorated();
+    }
+
+    public boolean isShowing() {
+        return windowFrame != null && windowFrame.isShowing();
+    }
+
     @Override
-    public int hashCode() {
+    public synchronized int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + getWidth();
@@ -180,7 +189,7 @@ public class Window {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public synchronized boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Window other = (Window) obj;
@@ -202,7 +211,7 @@ public class Window {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "Window [" +
            "width=" + getWidth() + 
            ", height=" + getHeight() + 
