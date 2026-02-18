@@ -17,13 +17,14 @@ public class Window {
     private JFrame windowFrame;
     private JLayeredPane windowPanel;
 
-    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque) {
+    protected Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque, boolean isDecorated) {
         windowFrame = new JFrame();
         windowPanel = new JLayeredPane();
 
         windowFrame.setResizable(isManuallyResizable);
         windowFrame.setLocation(xCoord, yCoord);
         windowFrame.setTitle(title);
+        windowFrame.setUndecorated(!isDecorated);
 
         windowPanel.setPreferredSize(new Dimension(width, height));
         windowPanel.setLayout(windowLayout);
@@ -65,7 +66,12 @@ public class Window {
     public void create() {
         SwingUtilities.invokeLater(() -> {
             windowFrame.pack();
+
+            windowFrame.setLocation(getXCoord(), getYCoord());
+
             windowFrame.setVisible(true); 
+
+            windowFrame.setLocation(getXCoord(), getYCoord());
             
             int targetState = isMinimized() ? JFrame.ICONIFIED : JFrame.NORMAL;
             windowFrame.setExtendedState(targetState);

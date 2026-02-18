@@ -27,6 +27,8 @@ public class WindowBuilder {
 
     private boolean isOpaque = true;
 
+    private boolean isDecorated = true;
+
     public WindowBuilder setWidth(int width) {
         this.width = width;
         return this;
@@ -89,6 +91,11 @@ public class WindowBuilder {
 
     public WindowBuilder setOpaque(boolean isOpaque) {
         this.isOpaque = isOpaque;
+        return this;
+    }
+
+    public WindowBuilder setDecorated(boolean isDecorated) {
+        this.isDecorated = isDecorated;
         return this;
     }
 
@@ -160,7 +167,7 @@ public class WindowBuilder {
 
     public Window build() {
         validate();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque, isDecorated);
     }
 
 }
