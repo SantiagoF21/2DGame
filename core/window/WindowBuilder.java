@@ -15,11 +15,7 @@ public class WindowBuilder {
 
     private Color backgroundColor = Color.BLACK;
 
-    private boolean isVisible = true;
-    private boolean isMinimized = false;
-
     private boolean isFocusable = true;
-    private boolean hasFocus = true;
 
     private String title = "New Window";
     private String appImageFilePath = "core/window/DefaultAppImage.png";
@@ -61,23 +57,8 @@ public class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
-        return this;
-    }
-
-    public WindowBuilder setMinimized(boolean isMinimized) {
-        this.isMinimized = isMinimized;
-        return this;
-    }
-
     public WindowBuilder setFocusable(boolean isFocusable) {
         this.isFocusable = isFocusable;
-        return this;
-    }
-
-    public WindowBuilder setHasFocus(boolean hasFocus) {
-        this.hasFocus = hasFocus;
         return this;
     }
 
@@ -137,20 +118,8 @@ public class WindowBuilder {
         return backgroundColor;
     }
 
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    public boolean isMinimized() {
-        return isMinimized;
-    }
-
     public boolean isFocusable() {
         return isFocusable;
-    }
-
-    public boolean hasFocus() {
-        return hasFocus;
     }
 
     public String getTitle() {
@@ -191,7 +160,7 @@ public class WindowBuilder {
 
     public Window build() {
         validate();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, isVisible, isMinimized, isFocusable, hasFocus, title,appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque);
     }
 
 }
