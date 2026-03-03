@@ -1,11 +1,15 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.Point;
 
 import core.env.DisplayEnvironment;
 
 public class WindowBuilder {
+
+    /* --- Defaults --- */
     
     private int width = 640;
     private int height = 360;
@@ -29,6 +33,8 @@ public class WindowBuilder {
 
     private boolean isDecorated = true;
 
+    /* --- Sizing --- */
+
     public WindowBuilder setWidth(int width) {
         this.width = width;
         return this;
@@ -39,6 +45,20 @@ public class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
+    public WindowBuilder setSize(Dimension dimension) {
+        this.width = dimension.width;
+        this.height = dimension.height;
+        return this;
+    }
+
+    /* --- Coordinates --- */
+
     public WindowBuilder setXCoord(int xCoord) {
         this.xCoord = xCoord;
         return this;
@@ -46,6 +66,31 @@ public class WindowBuilder {
 
     public WindowBuilder setYCoord(int yCoord) {
         this.yCoord = yCoord;
+        return this;
+    }
+
+    public WindowBuilder setCoords(int xCoord, int yCoord) {
+        this.xCoord = xCoord;
+        this.yCoord = yCoord;
+        return this;
+    }
+
+    public WindowBuilder setCoords(Point coords) {
+        this.xCoord = coords.x;
+        this.yCoord = coords.y;
+        return this;
+    }
+
+    public WindowBuilder center() {
+        this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
+        this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
+        return this;
+    }
+
+    /* --- Appearance --- */
+
+    public WindowBuilder setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -59,18 +104,20 @@ public class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder setFocusable(boolean isFocusable) {
-        this.isFocusable = isFocusable;
-        return this;
-    }
-
-    public WindowBuilder setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
     public WindowBuilder setAppImageFilePath(String appImageFilePath) {
         this.appImageFilePath = appImageFilePath;
+        return this;
+    }
+
+    public WindowBuilder setDecorated(boolean isDecorated) {
+        this.isDecorated = isDecorated;
+        return this;
+    }
+
+    /* --- Behavior --- */
+
+    public WindowBuilder setFocusable(boolean isFocusable) {
+        this.isFocusable = isFocusable;
         return this;
     }
 
@@ -94,64 +141,7 @@ public class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder setDecorated(boolean isDecorated) {
-        this.isDecorated = isDecorated;
-        return this;
-    }
-
-    public WindowBuilder centerOnScreen() {
-        this.xCoord = (DisplayEnvironment.SCREEN_WIDTH - width) / 2;
-        this.yCoord = (DisplayEnvironment.SCREEN_HEIGHT - height) / 2;
-        return this;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getXCoord() {
-        return xCoord;
-    }
-
-    public int getYCoord() {
-        return yCoord;
-    }
-
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public boolean isFocusable() {
-        return isFocusable;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAppImageFilePath() {
-        return appImageFilePath;
-    }
-
-    public LayoutManager getLayout() {
-        return layout;
-    }
-
-    public boolean isManuallyResizable() {
-        return isManuallyResizable;
-    }
-
-    public boolean isDoubleBuffered() {
-        return isDoubleBuffered;
-    }
-
-    public boolean isOpaque() {
-        return isOpaque;
-    }
+    /* --- Validation & Building --- */
 
     private void validate() {
         if (width <= 0) {
