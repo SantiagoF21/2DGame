@@ -150,8 +150,26 @@ public class Window {
         windowPanel.addMouseWheelListener(mouse);
     }
 
+    public void removeMouse(Mouse mouse) {
+        windowPanel.removeMouseListener(mouse);
+        windowPanel.removeMouseMotionListener(mouse);
+        windowPanel.removeMouseWheelListener(mouse);
+    }
+
+    public Mouse[] getMice() {
+        return (Mouse[]) windowPanel.getMouseListeners();
+    }
+
     public void addKeyboard(Keyboard keyboard) {
         windowPanel.addKeyListener(keyboard);
+    }
+
+    public void removeKeyboard(Keyboard keyboard) {
+        windowPanel.removeKeyListener(keyboard);
+    }
+
+    public Keyboard[] getKeyboards() {
+        return (Keyboard[]) windowPanel.getKeyListeners();
     }
 
     /* --- Setters --- */
