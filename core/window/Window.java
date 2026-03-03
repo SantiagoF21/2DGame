@@ -1,30 +1,40 @@
 package core.window;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import core.helper.Loader;
+import core.input.Keyboard;
+import core.input.Mouse;
 
 public class Window {
     
     private final JFrame windowFrame;
     private final JLayeredPane windowPanel;
 
+    private final Map<String, Component> componentMap;
+
     private final String appImageFilePath;
+
+    private volatile Shutdown shutdown;
 
     public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque, boolean isDecorated) {
         this.windowFrame = new JFrame();
         this.windowPanel = new JLayeredPane();
+        this.componentMap = new HashMap<>();
         this.appImageFilePath = appImageFilePath;
 
         windowFrame.setLocation(xCoord, yCoord);
@@ -43,38 +53,19 @@ public class Window {
         windowFrame.add(windowPanel);
     }
 
+    /* --- Window's Lifecycle & Control --- */
+
     public void init() {
         windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         windowFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int confirm = JOptionPane.showConfirmDialog(
-                windowFrame, 
-                "Do you want to save before exiting?", 
-                "Confirm Exit", 
-                JOptionPane.YES_NO_CANCEL_OPTION
-            );
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                handleShutdown(); // Run cleanup and exit
-            } else if (confirm == JOptionPane.NO_OPTION) {
-                handleShutdown(); // Just exit
-            }
+                if (shutdown != null) {
+                    shutdown.execute();
+                }
             }
         });
-    }
-
-    public void addShutdownHook() {
-
-    }
-
-    public void addListener() {
-
-    }
-
-    public void addComponent() {
-
     }
 
     public void create() {
@@ -91,34 +82,95 @@ public class Window {
         });
     }
 
-    private void handleShutdown() {
-        System.out.println("Shutdown Hooks initiated:");
-        
-        //Implement system responsible for handling shutdown hooks
-        
+    public void close() {
         windowFrame.dispose();
-        System.exit(0);
     }
 
-    private BufferedImage loadIconImage(String appImageFilePath) {
-        return (appImageFilePath != null) ? Loader.loadImage(appImageFilePath) : Loader.loadImage("");
+    public void setShutdown(Shutdown shutdown) {
+        this.shutdown = shutdown;
     }
 
-    private void handleResizing() {
-        windowFrame.revalidate();
-        windowFrame.pack();
+    /* --- Component Management --- */
+
+    public void addComponent(Component component) {
+        windowPanel.add(component);
+        addToMap(component);
+        sync();
     }
+
+    public void addComponent(Component component, Integer layer) {
+        windowPanel.add(component, layer);
+        addToMap(component);
+        sync();
+    }
+
+    public void addComponents(List<Component> components) {
+        components.forEach(component -> {
+            windowPanel.add(component);
+            addToMap(component);
+        });
+        sync();
+    }
+
+    public void removeComponent(Component component) {
+        if (component == null)
+            return;
+        if (component.getParent() != windowPanel) {
+            System.err.println("Warning: component '" + component.getName() + "' is not a child of this window's panel.");
+        return;
+        }
+        windowPanel.remove(component);
+        componentMap.remove(component.getName());
+        sync();
+    }
+
+    public void clear() {
+        windowPanel.removeAll();
+        componentMap.clear();
+        sync();
+    }
+
+    public void sync() {
+        windowPanel.revalidate();
+        windowFrame.repaint();
+    }
+
+    public Component getComponentByName(String name) {
+        return componentMap.get(name);
+}
+
+    public Component[] getComponents() {
+        return windowPanel.getComponents();
+    }
+
+    public int getComponentCount() {
+        return windowPanel.getComponentCount();
+    }
+
+    /* --- Input Management --- */
+
+    public void addMouse(Mouse mouse) {
+        windowPanel.addMouseListener(mouse);
+        windowPanel.addMouseMotionListener(mouse);
+        windowPanel.addMouseWheelListener(mouse);
+    }
+
+    public void addKeyboard(Keyboard keyboard) {
+        windowPanel.addKeyListener(keyboard);
+    }
+
+    /* --- Setters --- */
 
     public void setWidth(int width) {
         int currentHeight = (int) windowPanel.getPreferredSize().getHeight();
         windowPanel.setPreferredSize(new Dimension(width, currentHeight));
-        handleResizing();
+        applyResize();
     }
 
     public void setHeight(int height) {
         int currentWidth = (int) windowPanel.getPreferredSize().getWidth();
         windowPanel.setPreferredSize(new Dimension(currentWidth, height));
-        handleResizing();
+        applyResize();
     }
 
     public void setXCoord(int xCoord) {
@@ -137,6 +189,8 @@ public class Window {
     public void setFocusable(boolean isFocusable) {
         windowPanel.setFocusable(isFocusable);
     }
+
+    /* --- Getters --- */
 
     public int getWidth() {
         return (windowPanel.getWidth() > 0) ? windowPanel.getWidth() : windowPanel.getPreferredSize().width;
@@ -203,8 +257,30 @@ public class Window {
     }
 
     public boolean isShowing() {
-        return windowFrame != null && windowFrame.isShowing();
+        return windowFrame.isShowing();
     }
+
+    /* --- Helpers --- */
+
+    private void addToMap(Component component) {
+        if (component.getName() != null) {
+            componentMap.put(component.getName(), component);
+        }
+    }
+
+    private void applyResize() {
+        final boolean DIMENSION_IS_POSITIVE = windowPanel.getPreferredSize().width > 0 && windowPanel.getPreferredSize().height > 0;
+        if (DIMENSION_IS_POSITIVE) {
+            windowFrame.revalidate();
+            windowFrame.pack();
+        }
+    }
+
+    private BufferedImage loadIconImage(String appImageFilePath) {
+        return (appImageFilePath != null) ? Loader.loadImage(appImageFilePath) : null;
+    }
+
+    /* --- Overrides --- */
 
     @Override
     public int hashCode() {
