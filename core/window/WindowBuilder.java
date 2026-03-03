@@ -33,6 +33,11 @@ public class WindowBuilder {
 
     private boolean isDecorated = true;
 
+    private volatile Shutdown shutdown = () -> {
+        final int EXIT_PROGRAM = 0;
+        System.exit(EXIT_PROGRAM);
+    };
+
     /* --- Sizing --- */
 
     public WindowBuilder setWidth(int width) {
@@ -141,6 +146,11 @@ public class WindowBuilder {
         return this;
     }
 
+    public WindowBuilder setShutdown(Shutdown shutdown) {
+        this.shutdown = shutdown;
+        return this;
+    }
+
     /* --- Validation & Building --- */
 
     private void validate() {
@@ -157,7 +167,7 @@ public class WindowBuilder {
 
     public Window build() {
         validate();
-        return new Window(width, height, xCoord, yCoord, backgroundColor, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque, isDecorated);
+        return new Window(width, height, xCoord, yCoord, backgroundColor, isFocusable, title, appImageFilePath, layout, isManuallyResizable, isDoubleBuffered, isOpaque, isDecorated, shutdown);
     }
 
 }
