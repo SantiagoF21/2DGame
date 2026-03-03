@@ -29,13 +29,14 @@ public class Window {
 
     private final String appImageFilePath;
 
-    private volatile Shutdown shutdown;
+    private final Shutdown shutdown;
 
-    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque, boolean isDecorated) {
+    public Window(int width, int height, int xCoord, int yCoord, Color backgroundColor, boolean isFocusable, String title, String appImageFilePath, LayoutManager windowLayout, boolean isManuallyResizable, boolean isDoubleBuffered, boolean isOpaque, boolean isDecorated, Shutdown shutdown) {
         this.windowFrame = new JFrame();
         this.windowPanel = new JLayeredPane();
         this.componentMap = new HashMap<>();
         this.appImageFilePath = appImageFilePath;
+        this.shutdown = shutdown;
 
         windowFrame.setLocation(xCoord, yCoord);
         windowFrame.setResizable(isManuallyResizable);
@@ -61,9 +62,7 @@ public class Window {
         windowFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (shutdown != null) {
-                    shutdown.execute();
-                }
+                shutdown.execute();
             }
         });
     }
@@ -84,10 +83,6 @@ public class Window {
 
     public void close() {
         windowFrame.dispose();
-    }
-
-    public void setShutdown(Shutdown shutdown) {
-        this.shutdown = shutdown;
     }
 
     /* --- Component Management --- */
