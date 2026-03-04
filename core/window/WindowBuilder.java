@@ -33,7 +33,7 @@ public class WindowBuilder {
 
     private boolean isDecorated = true;
 
-    private volatile Shutdown shutdown = () -> {
+    private Shutdown shutdown = () -> {
         final int EXIT_PROGRAM = 0;
         System.exit(EXIT_PROGRAM);
     };
