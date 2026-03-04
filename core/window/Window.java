@@ -110,10 +110,7 @@ public class Window {
     }
 
     public void addComponents(List<Component> components) {
-        components.forEach(component -> {
-            windowPanel.add(component);
-            addToMap(component);
-        });
+        components.forEach(this::addComponentWithoutSync);
         sync();
     }
 
@@ -126,10 +123,7 @@ public class Window {
     }
 
     public void addGraphics(List<Graphics> graphics) {
-        graphics.forEach(graphic -> {
-            windowPanel.add(graphic.getDrawingCanvas());
-            addToMap(graphic.getDrawingCanvas());
-        });
+        graphics.forEach(this::addGraphicsWithoutSync);
         sync();
     }
 
@@ -146,15 +140,9 @@ public class Window {
     }
 
     public void removeGraphics(Graphics graphics) {
-        if (graphics == null)
-            return;
-        if (graphics.getDrawingCanvas().getParent() != windowPanel) {
-            System.err.println("Warning: component '" + graphics.getDrawingCanvas().getName() + "' is not a child of this window's panel.");
-        return;
+        if (graphics != null) {
+            removeComponent(graphics.getDrawingCanvas());
         }
-        windowPanel.remove(graphics.getDrawingCanvas());
-        componentMap.remove(graphics.getDrawingCanvas().getName());
-        sync();
     }
 
     public void clear() {
@@ -202,11 +190,13 @@ public class Window {
 
     public void addKeyboard(Keyboard keyboard) {
         windowPanel.addKeyListener(keyboard);
+        windowFrame.addKeyListener(keyboard);
         keyboards.add(keyboard);
     }
 
     public void removeKeyboard(Keyboard keyboard) {
         windowPanel.removeKeyListener(keyboard);
+        windowFrame.removeKeyListener(keyboard);
         keyboards.remove(keyboard);
     }
 
@@ -329,6 +319,15 @@ public class Window {
             windowFrame.revalidate();
             windowFrame.pack();
         }
+    }
+
+    private void addComponentWithoutSync(Component component) {
+        windowPanel.add(component);
+        addToMap(component);
+    }
+
+    private void addGraphicsWithoutSync(Graphics graphics) {
+        addComponentWithoutSync(graphics.getDrawingCanvas());
     }
 
     private BufferedImage loadIconImage(String appImageFilePath) {
