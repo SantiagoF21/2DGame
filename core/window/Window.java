@@ -95,7 +95,7 @@ public class Window {
         windowFrame.dispose();
     }
 
-    /* --- Component Management --- */
+    /* --- Component & Graphic Management --- */
 
     public void addComponent(Component component) {
         windowPanel.add(component);
@@ -109,22 +109,26 @@ public class Window {
         sync();
     }
 
-    public void addComponent(Graphics graphics) {
-        windowPanel.add(graphics.getDrawingCanvas());
-        addToMap(graphics.getDrawingCanvas());
-        sync();
-    }
-
-    public void addComponent(Graphics graphics, Integer layer) {
-        windowPanel.add(graphics.getDrawingCanvas(), layer);
-        addToMap(graphics.getDrawingCanvas());
-        sync();
-    }
-
     public void addComponents(List<Component> components) {
         components.forEach(component -> {
             windowPanel.add(component);
             addToMap(component);
+        });
+        sync();
+    }
+
+    public void addGraphics(Graphics graphics) {
+        addComponent(graphics.getDrawingCanvas());
+    }
+
+    public void addGraphics(Graphics graphics, Integer layer) {
+        addComponent(graphics.getDrawingCanvas(), layer);
+    }
+
+    public void addGraphics(List<Graphics> graphics) {
+        graphics.forEach(graphic -> {
+            windowPanel.add(graphic.getDrawingCanvas());
+            addToMap(graphic.getDrawingCanvas());
         });
         sync();
     }
@@ -138,6 +142,18 @@ public class Window {
         }
         windowPanel.remove(component);
         componentMap.remove(component.getName());
+        sync();
+    }
+
+    public void removeGraphics(Graphics graphics) {
+        if (graphics == null)
+            return;
+        if (graphics.getDrawingCanvas().getParent() != windowPanel) {
+            System.err.println("Warning: component '" + graphics.getDrawingCanvas().getName() + "' is not a child of this window's panel.");
+        return;
+        }
+        windowPanel.remove(graphics.getDrawingCanvas());
+        componentMap.remove(graphics.getDrawingCanvas().getName());
         sync();
     }
 
