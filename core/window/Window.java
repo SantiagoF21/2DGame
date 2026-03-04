@@ -7,6 +7,8 @@ import java.awt.LayoutManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ public class Window {
 
     private final Map<String, Component> componentMap;
 
+    private final List<Keyboard> keyboards;
+    private final List<Mouse> mice;
+
     private final String appImageFilePath;
 
     private final Shutdown shutdown;
@@ -35,6 +40,8 @@ public class Window {
         this.windowFrame = new JFrame();
         this.windowPanel = new JLayeredPane();
         this.componentMap = new HashMap<>();
+        this.keyboards = new ArrayList<>();
+        this.mice = new ArrayList<>();
         this.appImageFilePath = appImageFilePath;
         this.shutdown = shutdown;
 
@@ -62,7 +69,9 @@ public class Window {
         windowFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                shutdown.execute();
+                if (shutdown != null) {
+                    shutdown.execute();
+                }
             }
         });
     }
@@ -148,28 +157,32 @@ public class Window {
         windowPanel.addMouseListener(mouse);
         windowPanel.addMouseMotionListener(mouse);
         windowPanel.addMouseWheelListener(mouse);
+        mice.add(mouse);
     }
 
     public void removeMouse(Mouse mouse) {
         windowPanel.removeMouseListener(mouse);
         windowPanel.removeMouseMotionListener(mouse);
         windowPanel.removeMouseWheelListener(mouse);
+        mice.remove(mouse);
     }
 
-    public Mouse[] getMice() {
-        return (Mouse[]) windowPanel.getMouseListeners();
+    public List<Mouse> getMice() {
+        return Collections.unmodifiableList(mice);
     }
 
     public void addKeyboard(Keyboard keyboard) {
         windowPanel.addKeyListener(keyboard);
+        keyboards.add(keyboard);
     }
 
     public void removeKeyboard(Keyboard keyboard) {
         windowPanel.removeKeyListener(keyboard);
+        keyboards.remove(keyboard);
     }
 
-    public Keyboard[] getKeyboards() {
-        return (Keyboard[]) windowPanel.getKeyListeners();
+    public List<Keyboard> getKeyboards() {
+        return Collections.unmodifiableList(keyboards);
     }
 
     /* --- Setters --- */
