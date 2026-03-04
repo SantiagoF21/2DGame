@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 
+import core.graphics.Graphics;
 import core.helper.Loader;
 import core.input.Keyboard;
 import core.input.Mouse;
@@ -105,6 +106,18 @@ public class Window {
     public void addComponent(Component component, Integer layer) {
         windowPanel.add(component, layer);
         addToMap(component);
+        sync();
+    }
+
+    public void addComponent(Graphics graphics) {
+        windowPanel.add(graphics.getDrawingCanvas());
+        addToMap(graphics.getDrawingCanvas());
+        sync();
+    }
+
+    public void addComponent(Graphics graphics, Integer layer) {
+        windowPanel.add(graphics.getDrawingCanvas(), layer);
+        addToMap(graphics.getDrawingCanvas());
         sync();
     }
 
