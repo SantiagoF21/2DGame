@@ -65,6 +65,9 @@ public class Window {
     /* --- Window's Lifecycle & Control --- */
 
     public void init() {
+        windowFrame.setIgnoreRepaint(false);
+        windowPanel.setIgnoreRepaint(false);
+
         windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         windowFrame.addWindowListener(new WindowAdapter() {
