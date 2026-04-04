@@ -15,8 +15,11 @@ public final class DisplayEnvironment {
     public static final GraphicsDevice PRIMARY_DEVICE = GRAPHICS_ENVIRONMENT.getDefaultScreenDevice();
 
     public static final Rectangle PRIMARY_DEVICE_BOUNDS = PRIMARY_DEVICE.getDefaultConfiguration().getBounds();
-    
+
     public static final int SCREEN_WIDTH = PRIMARY_DEVICE_BOUNDS.width;
     public static final int SCREEN_HEIGHT = PRIMARY_DEVICE_BOUNDS.height;
+
+    public static final int SCREEN_X = PRIMARY_DEVICE_BOUNDS.x;
+    public static final int SCREEN_Y = PRIMARY_DEVICE_BOUNDS.y;
 
 }
