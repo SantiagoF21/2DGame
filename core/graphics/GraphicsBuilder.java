@@ -23,9 +23,13 @@ public class GraphicsBuilder {
 
     private boolean isFocusable = true;
 
+    private String name = "New Canvas";
+
     private int numOfBuffers = 3;
 
     private List<BufferedImage> images;
+
+    private Color brushColor = new Color(0xFF, 0x8C, 0x40);
 
     /* --- Sizing --- */
 
@@ -99,6 +103,11 @@ public class GraphicsBuilder {
         return this;
     }
 
+    public GraphicsBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
     public GraphicsBuilder setImages(List<BufferedImage> images) {
         this.images = images;
         return this;
@@ -113,6 +122,16 @@ public class GraphicsBuilder {
 
     public GraphicsBuilder setNumOfBuffers(int numOfBuffers) {
         this.numOfBuffers = numOfBuffers;
+        return this;
+    }
+
+    public GraphicsBuilder setBrushColor(Color brushColor) {
+        this.brushColor = brushColor;
+        return this;
+    }
+
+    public GraphicsBuilder setBrushColor(int red, int green, int blue) {
+        this.brushColor = new Color(red, green, blue);
         return this;
     }
 
@@ -132,7 +151,7 @@ public class GraphicsBuilder {
 
     public Graphics build() {
         validate();
-        return new Graphics(width, height, xCoord, yCoord, backgroundColor, isFocusable, numOfBuffers, images);
+        return new Graphics(width, height, xCoord, yCoord, backgroundColor, isFocusable, name, numOfBuffers, images, brushColor);
     }
 
 }
